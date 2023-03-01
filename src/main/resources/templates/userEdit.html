@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Editor</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/user}" th:object="${user}">
+    <input type="hidden" name="id" th:field="*{id}">
+    <label for="username">Username</label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <br/>
+    <label for="password">Password</label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <br/>
+    <label for="active">Active</label>
+    <input type="text" th:field="*{active}" id="active"/>
+    <br/>
+    <label for="roles">Roles. Example: [USER, ADMIN]</label>
+    <input type="text" th:field="*{roles}" id="roles"/>
+    <input type="submit" value="Update!">
+</form>
+</body>
+</html>

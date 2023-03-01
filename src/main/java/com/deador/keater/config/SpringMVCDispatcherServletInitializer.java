@@ -33,6 +33,12 @@ public class SpringMVCDispatcherServletInitializer extends AbstractAnnotationCon
         registerHiddenFieldFilter(aServletContext);
     }
 
+    /**
+
+     Registers a HiddenHttpMethodFilter with the given ServletContext for supporting HTTP methods other than GET and POST,
+     such as PUT, DELETE, PATCH, and more, by using a hidden form field to transmit the actual HTTP method name.
+     @param aContext the ServletContext to register the filter with
+     */
     private void registerHiddenFieldFilter(ServletContext aContext) {
         aContext.addFilter("hiddenHttpMethodFilter",
                 new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null, true, "/*");

@@ -27,8 +27,15 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String main(Model model) {
-        model.addAttribute("messages", messageRepository.findAll());
+    public String main(@RequestParam(name = "filter", required = false, defaultValue = "") String filter,
+                       Model model) {
+        if (filter != null && !filter.isEmpty()) {
+            model.addAttribute("messages", messageRepository.findByTag(filter));
+        } else {
+            model.addAttribute("messages", messageRepository.findAll());
+        }
+        model.addAttribute("filter", filter);
+
         return "main";
     }
 
@@ -48,15 +55,15 @@ public class MainController {
         return "redirect:/main";
     }
 
-    @GetMapping("filter")
-    public String filter(@RequestParam(name = "filter") String tag,
-                         Model model) {
-        if (tag != null && !tag.isEmpty()) {
-            model.addAttribute("messages", messageRepository.findByTag(tag));
-        } else {
-            model.addAttribute("messages", messageRepository.findAll());
-        }
-
-        return "/main";
-    }
+//    @GetMapping("filter")
+//    public String filter(@RequestParam(name = "filter") String tag,
+//                         Model model) {
+//        if (tag != null && !tag.isEmpty()) {
+//            model.addAttribute("messages", messageRepository.findByTag(tag));
+//        } else {
+//            model.addAttribute("messages", messageRepository.findAll());
+//        }
+//
+//        return "/main";
+//    }
 }

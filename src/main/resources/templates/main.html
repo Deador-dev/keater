@@ -7,6 +7,8 @@
 <body>
 <a th:href="@{/main}">It is a main page</a>
 <br/>
+<a th:href="@{/user}">User list</a>
+<br/>
 <a th:href="@{/main/new}">Create new message</a>
 <br/>
 <tr th:each="message: ${messages}">
@@ -17,8 +19,8 @@
     <br/>
 </tr>
 <br/>
-<form th:method="GET" th:action="@{filter}">
-    <input type="text" name="filter"/>
+<form th:method="GET" th:action="@{main}">
+    <input type="text" name="filter" th:value="${filter}"/>
     <button type="submit">Find</button>
 </form>
 <br/>
