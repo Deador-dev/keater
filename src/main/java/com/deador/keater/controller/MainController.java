@@ -11,18 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class GreetingController {
+public class MainController {
     private final MessageRepository messageRepository;
 
     @Autowired
-    public GreetingController(MessageRepository messageRepository) {
+    public MainController(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name,
-                           Model model) {
-        model.addAttribute("name", name);
+    @GetMapping("/")
+    public String greeting(Model model) {
         return "greeting";
     }
 
