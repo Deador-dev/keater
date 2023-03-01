@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+<a th:href="@{/main}">It is a main page</a>
+<br/>
+<a th:href="@{/main/new}">Create new message</a>
+<br/>
+<tr th:each="message: ${messages}">
+    <td th:text="${message.id}" />
+    <td th:text="${message.textOfMessage}" />
+    <td th:text="${message.tag}" />
+    <br/>
+</tr>
+<br/>
+<form th:method="GET" th:action="@{filter}">
+    <input type="text" name="filter"/>
+    <button type="submit">Find</button>
+</form>
+</body>
+</html>
