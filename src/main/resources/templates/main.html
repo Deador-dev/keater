@@ -10,9 +10,10 @@
 <a th:href="@{/main/new}">Create new message</a>
 <br/>
 <tr th:each="message: ${messages}">
-    <td th:text="${message.id}" />
-    <td th:text="${message.textOfMessage}" />
-    <td th:text="${message.tag}" />
+    <td th:text="${message.id}"/>
+    <td th:text="${message.textOfMessage}"/>
+    <td th:text="${message.tag}"/>
+    <td th:text="${message.getAuthorName()}"/>
     <br/>
 </tr>
 <br/>

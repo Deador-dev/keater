@@ -1,5 +1,6 @@
 package com.deador.keater.config;
 
+import com.deador.keater.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +19,11 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebMvc
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final DataSource dataSource;
+    private final UserService userService;
 
     @Autowired
-    public WebSecurityConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public WebSecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -42,11 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
+        auth.userDetailsService(userService)
                 // FIXME: 01.03.2023 TEMP!
-                .passwordEncoder(NoOpPasswordEncoder.getInstance())
-                .usersByUsernameQuery("SELECT username, password, active FROM usr WHERE username=?")
-                .authoritiesByUsernameQuery("SELECT u.username, ur.roles FROM usr u INNER JOIN user_role ur ON u.id = ur.user_id WHERE u.username=?");
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 }

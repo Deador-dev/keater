@@ -1,8 +1,10 @@
 package com.deador.keater.controller;
 
 import com.deador.keater.entity.Message;
+import com.deador.keater.entity.User;
 import com.deador.keater.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +38,12 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String createNew(@ModelAttribute(name = "message") Message message) {
+    public String createNewMessage(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute(name = "message") Message message
+    ) {
         // TODO: 01.03.2023 messageService.save()
+        message.setAuthor(user);
         messageRepository.save(message);
         return "redirect:/main";
     }
