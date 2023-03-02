@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 <a th:href="@{/main}">It is a main page</a>
@@ -16,6 +17,7 @@
     <td th:text="${message.textOfMessage}"/>
     <td th:text="${message.tag}"/>
     <td th:text="${message.getAuthorName()}"/>
+    <img th:src="@{'/img/' + ${message.filename}}" id="imgPreview" height="150px" width="150px"/>
     <br/>
 </tr>
 <br/>

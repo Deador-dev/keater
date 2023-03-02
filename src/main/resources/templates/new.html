@@ -5,9 +5,10 @@
     <title>New</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/main}" th:object="${message}">
+<form th:method="POST" th:action="@{/main}" th:object="${message}" enctype="multipart/form-data">
     <input type="text" th:field="*{textOfMessage}"/>
     <input type="text" th:field="*{tag}"/>
+    <input type="file" name="file" accept="image/jpeg, image/png"/>
     <input type="submit" value="Create!">
 </form>
 </body>

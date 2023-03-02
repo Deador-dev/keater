@@ -37,6 +37,7 @@ public class UserController {
     @PostMapping
     public String updateUser(@ModelAttribute(name = "user") User user) {
         ModelMapper modelMapper = new ModelMapper();
+
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.LOOSE);
         User userToDB = modelMapper
