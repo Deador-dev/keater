@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -26,14 +27,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/registration", "/static").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/user/**").hasAuthority("ADMIN")
+                .anyRequest()
+                .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
+                .defaultSuccessUrl("/main")
                 .and()
                 .logout()
-                .permitAll();
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .and()
+                .exceptionHandling()
+                .and()
+                .csrf()
+                .disable();
+        http.headers().frameOptions().disable();
     }
 
     @Override
@@ -42,5 +55,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // FIXME: 01.03.2023 Need to use BCryptPasswordEncoder()
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
-
 }

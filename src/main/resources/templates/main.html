@@ -1,33 +1,77 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Main</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<a th:href="@{/main}">It is a main page</a>
-<br/>
-<a th:href="@{/user}">User list</a>
-<br/>
-<a th:href="@{/main/new}">Create new message</a>
-<br/>
-<tr th:each="message: ${messages}">
-    <td th:text="${message.id}"/>
-    <td th:text="${message.textOfMessage}"/>
-    <td th:text="${message.tag}"/>
-    <td th:text="${message.getAuthorName()}"/>
-    <img th:src="@{'/img/' + ${message.filename}}" id="imgPreview" height="150px" width="150px"/>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <a class="navbar-brand" href="#">Keater</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/main}">Home</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/user}">User List</a>
+            </li>
+        </ul>
+        <div class="navbar-text mr-3">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-primary">Sign Out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="form-row">
+        <form th:method="GET" th:action="@{main}" class="form-inline">
+            <input type="text" name="filter" th:value="${filter}" class="form-control" placeholder="Search by tag"/>
+            <button type="submit" class="btn btn-primary ml-2">Find</button>
+        </form>
+    </div>
+
+    <a th:href="@{/main/new}">Create new message</a>
     <br/>
-</tr>
-<br/>
-<form th:method="GET" th:action="@{main}">
-    <input type="text" name="filter" th:value="${filter}"/>
-    <button type="submit">Find</button>
-</form>
-<br/>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+
+    <div class="card-columns">
+        <div th:each="message: ${messages}" class="card my-3">
+            <div class="p-1">
+                <img th:src="@{'/img/' + ${message.filename}}" class="card-img-top"/>
+            </div>
+            <div class="m-2">
+                <p th:text="${message.id}"/>
+                <p th:text="${message.textOfMessage}"/>
+                <p th:text="${message.tag}"/>
+            </div>
+            <div class="card-footer text-muted">
+                <p th:text="${message.getAuthorName()}"/>
+            </div>
+            <br/>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>
