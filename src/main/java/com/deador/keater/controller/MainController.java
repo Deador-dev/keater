@@ -7,17 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -31,7 +34,7 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String greeting(Model model) {
+    public String greeting() {
         return "greeting";
     }
 
@@ -52,33 +55,46 @@ public class MainController {
 
     @GetMapping("/main/new")
     public String getNew(@ModelAttribute(name = "message") Message message) {
+
         return "new";
     }
 
-    @PostMapping("/main")
+    @PostMapping("/main/new")
     public String createNewMessage(
             @AuthenticationPrincipal User user,
-            @ModelAttribute(name = "message") Message message,
-            @RequestParam("file") MultipartFile file
+            @ModelAttribute(name = "message") @Valid Message message,
+            @RequestParam("file") MultipartFile file,
+            BindingResult bindingResult,
+            Model model
     ) throws IOException {
-        if (!file.isEmpty()) {
-            Path uploadDir = Paths.get(uploadPath);
+        // TODO: 06.03.2023 Validating
+        // FIXME: 06.03.2023 Don't work bindingResult OR thymeleaf form
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = ControllerUtils.getErrorsMap(bindingResult);
+            model.addAttribute("errorsMap", errorsMap);
+            return "new";
+        } else {
+            if (!file.isEmpty()) {
+                Path uploadDir = Paths.get(uploadPath);
 
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFilename = uuidFile + "." + file.getOriginalFilename();
+
+                file.transferTo(new File(uploadPath + "/" + resultFilename));
+                message.setFilename(resultFilename);
+            } else {
+                message.setFilename("unknown");
             }
 
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-            message.setFilename(resultFilename);
-        } else {
-            message.setFilename("unknown");
+            message.setAuthor(user);
+            messageRepository.save(message);
         }
 
-        message.setAuthor(user);
-        messageRepository.save(message);
         return "redirect:/main";
     }
+
 }
