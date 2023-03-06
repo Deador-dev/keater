@@ -6,10 +6,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>User Editor</title>
+    <title>Profile</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
     <a class="navbar-brand" href="#">Keater</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -29,24 +29,32 @@
                 <a class="nav-link" th:href="@{/user/profile}">Profile</a>
             </li>
         </ul>
+        <div class="navbar-text mr-3">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-primary">Sign Out</button>
+            </form>
+        </div>
     </div>
 </nav>
 
-<form th:method="POST" th:action="@{/user}" th:object="${user}">
-    <input type="hidden" name="id" th:field="*{id}">
-    <label for="username">Username</label>
-    <input type="text" th:field="*{username}" id="username"/>
-    <br/>
-    <label for="password">Password</label>
-    <input type="text" th:field="*{password}" id="password"/>
-    <br/>
-    <label for="active">Active</label>
-    <input type="text" th:field="*{active}" id="active"/>
-    <br/>
-    <label for="roles">Roles. Example: [USER, ADMIN]</label>
-    <input type="text" th:field="*{roles}" id="roles"/>
-    <input type="submit" value="Update!">
-</form>
+<div class="container">
+    <h5 th:text="${username}">unknown</h5>
+    <form method="post">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label"> Password : </label>
+            <div class="col-sm-6">
+                <input type="password" name="password" class="form-control" placeholder="password"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label"> Email : </label>
+            <div class="col-sm-6">
+                <input type="email" name="email" class="form-control" placeholder="example@example.com" th:value="${email + ''}"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"

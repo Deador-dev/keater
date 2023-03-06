@@ -1,28 +1,26 @@
 package com.deador.keater.controller;
 
 import com.deador.keater.entity.User;
-import com.deador.keater.repository.UserRepository;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
+import com.deador.keater.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user")
-//@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public String userList(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findAll());
         return "userList";
     }
 
@@ -35,14 +33,26 @@ public class UserController {
 
     @PostMapping
     public String updateUser(@ModelAttribute(name = "user") User user) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        modelMapper.getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.LOOSE);
-        User userToDB = modelMapper
-                .map(user, User.class);
-        userRepository.save(userToDB);
+        userService.saveUser(user);
 
         return "redirect:/user";
     }
+
+    @GetMapping("/profile")
+    public String getProfile(@AuthenticationPrincipal User user,
+                             Model model) {
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("email", user.getEmail());
+
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@AuthenticationPrincipal User user,
+                                @RequestParam("password") String password,
+                                @RequestParam("email") String email){
+        userService.updateProfile(user, password, email);
+        return "redirect:/user/profile";
+    }
+
 }

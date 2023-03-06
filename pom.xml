@@ -71,6 +71,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <!-- FlyWay -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>8.5.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>8.5.13</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -78,6 +91,21 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- FlyWayDB Auth -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.5.13</version>
+                <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <user>${DB_USERNAME}</user>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <password>${DB_PASSWORD}</password>
+                    <schemas>
+                        <schema>keater</schema>
+                    </schemas>
+                </configuration>
             </plugin>
         </plugins>
 
